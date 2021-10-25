@@ -34,6 +34,7 @@ void Seat::queueUpdate(std::array<Seat, 8>& adjacentSeats) {
 
 void Seat::updateState(void) {
     this->_State = this->_NextState;
+    std::cout << "This is just for testing" << std::endl;
 }
 
 #endif // DAY11_H
