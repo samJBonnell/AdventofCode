@@ -6,6 +6,7 @@
 
 uint16_t getBits(const std::vector<uint16_t>& binary, const uint16_t& inputLength, std::function<bool(const uint16_t&, const uint16_t&)> comp);
 bool nthBit(uint16_t& number, uint16_t index);
+void finalEntry(std::vector<uint16_t>& vec, uint16_t index, std::function<bool(const uint16_t&, const uint16_t&)> comp);
 
 int main(void) {
     std::istream_iterator<std::string> in(std::cin),  eof;
@@ -28,42 +29,16 @@ int main(void) {
         epsilon |= (~(gamma >> i) & 1) << (i);
     }
 
-    std::cout << gamma * epsilon << std::endl;
-    std::cout << gamma << " " << epsilon << std::endl;
-
     // Part Two
 
     std::vector<uint16_t> binaryCopy(binary);
-    uint16_t index = inputLength;
-    uint16_t commonBits = 0, leastBits = 0;
-    
-    while (binary.size() != 1) {
-            commonBits = getBits(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
-            for (auto it = binary.begin(); it != binary.end();) {
-                if (nthBit(commonBits, index) != nthBit(*it, index)) it = binary.erase(it);
-                else {
-                    it++;
-                }
-            }
 
-            index--;
-    }
+    finalEntry(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
+    finalEntry(binaryCopy, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first < second); });
 
-    index = inputLength;
+    std::cout << std::endl << "Part One:" << std::endl << gamma * epsilon << std::endl << gamma << " " << epsilon << std::endl << std::endl;
 
-    while (binaryCopy.size() != 1) {
-            leastBits = getBits(binaryCopy, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first < second); });
-            for (auto it = binaryCopy.begin(); it != binaryCopy.end();) {
-                if (nthBit(leastBits, index) != nthBit(*it, index)) it = binaryCopy.erase(it);
-                else {
-                    it++;
-                }
-            }
-
-            index--;
-    }
-
-    std::cout << std::endl << binary[0] * binaryCopy[0] << std::endl << binary[0] << " " << binaryCopy[0] << std::endl;
+    std::cout << "Part Two" << std::endl << binary[0] * binaryCopy[0] << std::endl << binary[0] << " " << binaryCopy[0] << std::endl;
 
     return 0;
 }
@@ -91,4 +66,22 @@ uint16_t getBits(const std::vector<uint16_t>& binary, const uint16_t& inputLengt
 
 bool nthBit(uint16_t& number, uint16_t index) {
     return ((number >> index) & 1);
+}
+
+void finalEntry(std::vector<uint16_t>& vec, uint16_t index, std::function<bool(const uint16_t&, const uint16_t&)> comp) {
+    uint16_t bitMask = 0;
+
+    while (vec.size() != 1) {
+            bitMask = getBits(vec, index, comp);
+            for (auto it = vec.begin(); it != vec.end();) {
+                if (nthBit(bitMask, index) != nthBit(*it, index)) it = vec.erase(it);
+                else {
+                    it++;
+                }
+            }
+
+            index--;
+    }
+
+    return;
 }

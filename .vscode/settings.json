@@ -65,6 +65,9 @@
         "optional": "cpp",
         "ratio": "cpp",
         "bitset": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp"
     }
 }
