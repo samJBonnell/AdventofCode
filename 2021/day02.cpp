@@ -18,7 +18,6 @@ int main(void) {
     pos position;
 
     while (std::getline(std::cin, tempString)) { input.push_back(tempString); }
-
     submarinePos(input, position);
 
     std::cout << position.y * position.x << std::endl;
