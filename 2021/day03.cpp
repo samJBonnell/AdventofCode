@@ -10,8 +10,6 @@ uint16_t getBits(const std::vector<uint16_t>& binary, const uint16_t& inputLengt
 bool nthBit(uint16_t& number, uint16_t index);
 void finalEntry(std::vector<uint16_t>& vec, uint16_t index, std::function<bool(const uint16_t&, const uint16_t&)> comp);
 
-
-
 int main(void) {
     std::istream_iterator<std::string> in(std::cin),  eof;
     std::vector<std::string> input(in, eof);
