@@ -4,7 +4,8 @@
 #include <string>
 #include <functional>
 
-uint16_t mostcommonBits(const std::vector<uint16_t>& binary, const uint16_t& inputLength, std::function<bool(const uint16_t&, const uint16_t&)> comp);
+uint16_t getBits(const std::vector<uint16_t>& binary, const uint16_t& inputLength, std::function<bool(const uint16_t&, const uint16_t&)> comp);
+bool nthBit(uint16_t& number, uint16_t index);
 
 int main(void) {
     std::istream_iterator<std::string> in(std::cin),  eof;
@@ -21,7 +22,7 @@ int main(void) {
 
     uint16_t gamma = 0, epsilon = 0;
 
-    gamma = mostcommonBits(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
+    gamma = getBits(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
 
     for (std::string::size_type i = 0; i <= inputLength; i++) {
         epsilon |= (~(gamma >> i) & 1) << (i);
@@ -32,12 +33,42 @@ int main(void) {
 
     // Part Two
 
+    std::vector<uint16_t> binaryCopy(binary);
+    uint16_t index = inputLength;
+    uint16_t commonBits = 0, leastBits = 0;
+    
+    while (binary.size() != 1) {
+            commonBits = getBits(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
+            for (auto it = binary.begin(); it != binary.end();) {
+                if (nthBit(commonBits, index) != nthBit(*it, index)) it = binary.erase(it);
+                else {
+                    it++;
+                }
+            }
 
+            index--;
+    }
+
+    index = inputLength;
+
+    while (binaryCopy.size() != 1) {
+            leastBits = getBits(binaryCopy, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first < second); });
+            for (auto it = binaryCopy.begin(); it != binaryCopy.end();) {
+                if (nthBit(leastBits, index) != nthBit(*it, index)) it = binaryCopy.erase(it);
+                else {
+                    it++;
+                }
+            }
+
+            index--;
+    }
+
+    std::cout << std::endl << binary[0] * binaryCopy[0] << std::endl << binary[0] << " " << binaryCopy[0] << std::endl;
 
     return 0;
 }
 
-uint16_t mostcommonBits(const std::vector<uint16_t>& binary, const uint16_t& inputLength, std::function<bool(const uint16_t&, const uint16_t&)> comp) {
+uint16_t getBits(const std::vector<uint16_t>& binary, const uint16_t& inputLength, std::function<bool(const uint16_t&, const uint16_t&)> comp) {
     uint16_t oneBit = 0, zeroBit = 0;
     uint16_t gamma = 0, epsilon = 0;
 
@@ -56,4 +87,8 @@ uint16_t mostcommonBits(const std::vector<uint16_t>& binary, const uint16_t& inp
     }
 
     return gamma;
+}
+
+bool nthBit(uint16_t& number, uint16_t index) {
+    return ((number >> index) & 1);
 }

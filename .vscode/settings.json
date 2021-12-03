@@ -64,6 +64,7 @@
         "iomanip": "cpp",
         "optional": "cpp",
         "ratio": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "functional": "cpp"
     }
 }
