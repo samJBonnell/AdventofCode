@@ -36,25 +36,31 @@ BingoBoard::BingoBoard(std::istream& in) {
 bool BingoBoard::checkBoard(const std::set<uint16_t>& winningNumbers) {
     std::set<uint16_t> indexes;
     uint16_t sequence = 0;
+    uint16_t maxSequence = 0;
 
     for (const auto& winningNumber : winningNumbers) {
         auto it = board.find(winningNumber);
         if (it != board.end()) indexes.insert(it->second);
     }
 
+    if (indexes.size() < 5) return 0;
+
     auto first = indexes.begin(), second = indexes.begin();
     second++;
 
     for (; second != indexes.end(); first++, second++) {
-        if (*(first) + 1 == *second || *(first) - 1 == *second || *(first) + 5 == *second || *(first) - 5 == *second) {
+        if ((*(first) % 5) + 1 == (*second) % 5 || (*(first) % 5) + 5 == (*second) % 5 ) {
             sequence += 1;
         }
         else {
+            maxSequence = (maxSequence > sequence) ? maxSequence : sequence;
             sequence = 0;
         }
     }
+
+    maxSequence = (maxSequence > sequence) ? maxSequence : sequence;
     
-    return (sequence >= 5);
+    return (maxSequence >= 4) ? 1 : 0;
 }
 
 uint16_t BingoBoard::sumNotFound(std::set<uint16_t>& calledNumbers) const {
