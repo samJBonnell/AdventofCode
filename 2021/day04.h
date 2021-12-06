@@ -2,7 +2,6 @@
 #define DAY04_H
 
 #include <iostream>
-#include <map>
 #include <set>
 #include <sstream>
 #include <string>
