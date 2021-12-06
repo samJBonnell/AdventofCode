@@ -6,75 +6,74 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <vector>
+#include <algorithm>
+#include <array>
 
 class BingoBoard {
 public:
     BingoBoard() = default;
     BingoBoard(std::istream& in);
 
+    inline void resetBoard() { winState = 0; };
+
     bool checkBoard(const std::set<uint16_t>& winningNumbers);
     void printBoard(std::ostream& out) const;
     uint16_t sumNotFound(std::set<uint16_t>& calledNumbers) const;
 
+    bool winState = 0;
+
 private:
-    std::map<uint16_t, uint16_t> board;
+    std::vector<std::set<uint16_t>> winningConditions;
+    std::array<std::set<uint16_t>, 5> rows, cols;
+    uint16_t boardSum = 0;
 };
 
 BingoBoard::BingoBoard(std::istream& in) {
+    uint16_t col_index = 0, row_index = 0, temp_int;
     std::string tempStr;
-    uint16_t index = 0;
-    char tempChar;
 
-    while (index < 25 && !in.eof()) {
-        in >> tempStr;
-        board.insert(std::pair<uint16_t, uint16_t>(std::stoi(tempStr), index++));
+    while (std::getline(in, tempStr) && tempStr[0] != '\0') {
+        std::stringstream tempStream(tempStr);
+        while (tempStream >> tempStr) {
+            temp_int = std::stoi(tempStr);
+            cols[col_index++ % 5].insert(temp_int);
+            rows[row_index % 5].insert(temp_int);
+            boardSum += temp_int;
+        }
+        col_index = 0;
+        row_index++;
     }
+
+    for (const auto& row : rows) winningConditions.push_back(row);
+    for (const auto& col : cols) winningConditions.push_back(col);
 
     return;
 }
 
-bool BingoBoard::checkBoard(const std::set<uint16_t>& winningNumbers) {
-    std::set<uint16_t> indexes;
-    uint16_t sequence = 0;
-    uint16_t maxSequence = 0;
+bool BingoBoard::checkBoard(const std::set<uint16_t>& calledNumbers){
+    std::set<uint16_t>::iterator it = calledNumbers.begin(), end = calledNumbers.end();
 
-    for (const auto& winningNumber : winningNumbers) {
-        auto it = board.find(winningNumber);
-        if (it != board.end()) indexes.insert(it->second);
-    }
+    if (winState) return 0;
 
-    if (indexes.size() < 5) return 0;
-
-    auto first = indexes.begin(), second = indexes.begin();
-    second++;
-
-    for (; second != indexes.end(); first++, second++) {
-        if ((*(first) % 5) + 1 == (*second) % 5 || (*(first) % 5) + 5 == (*second) % 5 ) {
-            sequence += 1;
-        }
-        else {
-            maxSequence = (maxSequence > sequence) ? maxSequence : sequence;
-            sequence = 0;
+    for (const auto& winningCondition : winningConditions) {
+        if (std::includes(it, end, winningCondition.begin(), winningCondition.end())) {
+            winState = 1;
+            return 1;
         }
     }
 
-    maxSequence = (maxSequence > sequence) ? maxSequence : sequence;
-    
-    return (maxSequence >= 4) ? 1 : 0;
+    return 0;
 }
 
 uint16_t BingoBoard::sumNotFound(std::set<uint16_t>& calledNumbers) const {
-    uint16_t uncalledSum = 0;
-    for (const auto& value : board) {
-        uncalledSum += value.first;
-    }
-
+    uint16_t subtractiveSum = 0;
     for (const auto& number : calledNumbers) {
-        auto it = board.find(number);
-        if (it != board.end()) uncalledSum -= number;
+        for (const auto& row : rows) {
+            if (row.find(number) != row.end()) subtractiveSum += number;
+        }
     }
-
-    return uncalledSum;
+    return (boardSum - subtractiveSum);
 }
 
 #endif // DAY04_H
