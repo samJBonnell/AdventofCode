@@ -34,7 +34,7 @@ int main(void) {
 
 uint32_t fuel_for_move(const uint16_t& rhs, const uint16_t& lhs) {
     uint32_t total_fuel = 0;
-    uint32_t distance = std::abs(static_cast<int>(lhs) - rhs);
+    uint32_t distance = std::abs(static_cast<int>(lhs) - static_cast<int>(rhs));
     while (distance != 0) {
         total_fuel += distance--;
     }
