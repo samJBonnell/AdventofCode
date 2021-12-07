@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-#include "day04.h"
+#include "day04.hpp"
 
 int main(void) {
     std::vector<BingoBoard> boards;

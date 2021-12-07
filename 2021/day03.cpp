@@ -23,13 +23,13 @@ int main(void) {
 
     // Part One
 
-    gamma = getBits(binary, inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
+    gamma = getBits(binary, inputLength, [](uint16_t lhs, uint16_t rhs) -> bool { return (lhs >= rhs); });
     for (std::string::size_type i = 0; i <= inputLength; i++) { epsilon |= (~(gamma >> i) & 1) << (i); }
 
     // Part Two
 
-    finalEntry(binary,      inputLength, [](uint16_t first, uint16_t second) -> bool { return (first >= second); });
-    finalEntry(binaryCopy,  inputLength, [](uint16_t first, uint16_t second) -> bool { return (first < second); });
+    finalEntry(binary,      inputLength, [](uint16_t lhs, uint16_t rhs) -> bool { return (lhs >= rhs); });
+    finalEntry(binaryCopy,  inputLength, [](uint16_t lhs, uint16_t rhs) -> bool { return (lhs < rhs); });
 
     // Output
 
