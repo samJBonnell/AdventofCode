@@ -12,7 +12,7 @@ int main(void) {
     uint16_t simulated_days = 256;
 
     std::string tempStr;
-
+    
     while (std::getline(std::cin, tempStr, ',')) { fish_population.push_back(fish(std::stoi(tempStr))); }
 
     while (simulated_days-- != 0) {
