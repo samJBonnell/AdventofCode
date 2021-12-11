@@ -21,8 +21,6 @@ int main(void) {
         std::stringstream uniqueSignalStream(tempStr.substr(0, delimiter));
         std::stringstream outputValueStream(tempStr.substr(delimiter + 2));
 
-        
-
         while (uniqueSignalStream >> tempStr) {
             tempVec.emplace_back(tempStr);
             auto it = &tempVec.back();
