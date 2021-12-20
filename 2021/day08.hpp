@@ -48,6 +48,7 @@ uint16_t includes_count(const uniqueSignal& lhs, const uniqueSignal& rhs) {
 
     auto min_it = (lhs.signalConnections.size() < rhs.signalConnections.size()) ? rhs.signalConnections.begin() : lhs.signalConnections.begin();
     auto max_it = (lhs.signalConnections.size() < rhs.signalConnections.size()) ? rhs.signalConnections.end() : lhs.signalConnections.end();
+
     auto fixedSet = (lhs.signalConnections.size() > rhs.signalConnections.size()) ? &rhs.signalConnections : &lhs.signalConnections;
 
     for (; min_it != max_it; min_it++) { count += fixedSet->count(*min_it); }
