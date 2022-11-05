@@ -51,6 +51,7 @@ int main(void) {
 
     std::cout << "Part One:" << std::endl << total_risk << std::endl;
     std::cout << "Part Two:" << std::endl << basin_area << std::endl;
+    std::cout << "This is a test" << std::endl;
 
     return 0;
 }
@@ -79,7 +80,5 @@ std::multiset<uint16_t> make_adjacent(const std::vector<std::vector<uint16_t>>& 
 }
 
 uint16_t basin_size(std::vector<std::vector<uint16_t>>& cave_floor, uint16_t it_row, uint16_t it_col, std::set<std::pair<uint16_t, uint16_t>>& basin_points) {
-    while (cave_floor[it_row][it_col] != 9) {
-        
-    }
+    
 }
