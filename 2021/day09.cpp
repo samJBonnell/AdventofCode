@@ -51,7 +51,6 @@ int main(void) {
 
     std::cout << "Part One:" << std::endl << total_risk << std::endl;
     std::cout << "Part Two:" << std::endl << basin_area << std::endl;
-    std::cout << "This is a test" << std::endl;
 
     return 0;
 }
