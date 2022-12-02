@@ -8,25 +8,6 @@ int main(void) {
     std::map<char, char> winningCombinations;
     std::map<char, char> tyingCombinations;
     std::map<char, char> losingCombinations;
-    /*
-    A : Rock    - > X : Rock    - > 1 point
-    B : Paper   - > Y : Paper   - > 2 point
-    C : Scissor - > Z : Scissor - > 3 point
-
-    Win - 6
-    Draw - 3
-    Lose - 0
-
-    Paper Beats Rock        -> Y,A or B,X
-    Rock Beats Scissors     -> X,C or A,Z
-    Scissors beat Paper     -> Z,B or C,Y
-
-    Part Two:
-
-    X - Lose
-    Y - Draw
-    Z - Win
-    */
 
     winningCombinations.insert({'A','Y'});
     winningCombinations.insert({'C','X'});
@@ -47,7 +28,7 @@ int main(void) {
 
     while (std::getline(std::cin, inputString)) {
         if (winningCombinations[inputString[0]] == inputString[2]) score += 6;  // Win
-        if (tyingCombinations[inputString[0]] == inputString[2]) score += 3;                       // Draw
+        if (tyingCombinations[inputString[0]] == inputString[2]) score += 3;    // Draw
 
         switch(inputString[2]) {
             case 'X': // Lose
