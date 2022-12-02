@@ -6,16 +6,16 @@
 
 int main(void) {
     std::map<char, char> winningCombinations;
-    std::map<char, char> tyingCombinations;
+    std::map<char, char> tieingCombinations;
     std::map<char, char> losingCombinations;
 
     winningCombinations.insert({'A','Y'});
     winningCombinations.insert({'C','X'});
     winningCombinations.insert({'B','Z'});
 
-    tyingCombinations.insert({'A','X'});
-    tyingCombinations.insert({'B','Y'});
-    tyingCombinations.insert({'C','Z'});
+    tieingCombinations.insert({'A','X'});
+    tieingCombinations.insert({'B','Y'});
+    tieingCombinations.insert({'C','Z'});
 
     losingCombinations.insert({'B','X'});
     losingCombinations.insert({'A','Z'});
@@ -28,7 +28,7 @@ int main(void) {
 
     while (std::getline(std::cin, inputString)) {
         if (winningCombinations[inputString[0]] == inputString[2]) score += 6;  // Win
-        if (tyingCombinations[inputString[0]] == inputString[2]) score += 3;    // Draw
+        if (tieingCombinations[inputString[0]] == inputString[2]) score += 3;    // Draw
 
         switch(inputString[2]) {
             case 'X': // Lose
@@ -38,7 +38,7 @@ int main(void) {
             case 'Y': // Draw
                 score += 2;
                 scoreTwo += 3;
-                previousPlay = tyingCombinations[inputString[0]];
+                previousPlay = tieingCombinations[inputString[0]];
                 break;
             case 'Z': // Win
                 score += 3;
