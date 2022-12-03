@@ -36,7 +36,6 @@ void submarinePos(std::vector<std::string>& input, pos& position) {
         if (inputCommand == "forward")  { position.x += modifier; position.y += modifier * position.aim; }
         if (inputCommand == "up")       { position.aim -= modifier; }
         if (inputCommand == "down")     { position.aim += modifier; }
-        
     }
 
     return;
