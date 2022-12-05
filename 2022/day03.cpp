@@ -8,7 +8,7 @@ const uint32_t UPPERFACTOR = 38;
 const uint32_t LOWERFACTOR = 96;
 
 void uniqueChars(char& returnChar, const std::set<char> front, const std::set<char> back);
-void commonSet(std::set<char>& returnSet, const std::set<char>& front, const std::set<char>& back);
+std::set<char> commonSet(const std::set<char>& front, const std::set<char>& back);
 
 struct RuckSack {
     std::set<char> front, back;
@@ -54,8 +54,8 @@ int main(void) {
     uint32_t score2 = 0;
 
     for (auto sack = RuckSacks.begin(); sack != RuckSacks.end(); sack + 3) {
-        commonSet(tempSet, (*(sack++)).total, (*(sack++)).total);
-        commonSet(tempSet, (*(sack++)).total, tempSet);
+        tempSet = commonSet((*(sack++)).total, (*(sack++)).total);
+        tempSet = commonSet((*(sack++)).total, tempSet);
 
         if (std::isupper(*tempSet.begin())) score2 += *tempSet.begin() - UPPERFACTOR;
         else score2 += *tempSet.begin() - LOWERFACTOR;
@@ -75,8 +75,10 @@ void uniqueChars(char& returnChar, const std::set<char> front, const std::set<ch
     }
 }
 
-void commonSet(std::set<char>& returnSet, const std::set<char>& front, const std::set<char>& back) {
+std::set<char> commonSet(const std::set<char>& front, const std::set<char>& back) {
+    std::set<char> tempSet;
     for (const auto& item : front) {
-        if (back.find(item) != back.end()) returnSet.insert(item);
+        if (back.find(item) != back.end()) tempSet.insert(item);
     }
+    return tempSet;
 }
