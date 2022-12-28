@@ -25,6 +25,8 @@ public:
 
     friend void searchDirectories(Directory* root, const std::string target, bool& found);
     friend uint64_t sumDirectories(Directory* root);
+    friend std::vector<Directory*> limitedDirectories(Directory* root, const uint64_t limit);
+
     friend bool operator==(const Directory* lhs, const std::string& rhs);
     friend bool operator==(const Directory lhs, const std::string& rhs);
     friend bool operator!=(const Directory* lhs, const std::string& rhs);
@@ -71,6 +73,19 @@ uint64_t sumDirectories(Directory* root) {
     }
 
     return tempSum;
+}
+
+std::vector<Directory*> limitedDirectories(Directory* root, const uint64_t limit) {
+    std::vector<Directory* > tempVec, tempVec2;
+
+    for (const auto dir : root->subDirectories) {
+        tempVec2 = limitedDirectories(dir, limit);
+        tempVec.insert(std::end(tempVec), std::begin(tempVec2), std::end(tempVec2));
+    }
+
+    if (sumDirectories(root) <= limit) tempVec.push_back(root);
+
+    return tempVec;
 }
 
 File createFile(std::string inName, uint64_t inSize) {
