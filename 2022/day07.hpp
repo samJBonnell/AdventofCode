@@ -13,19 +13,18 @@ struct File {
 class Directory {
 public:
     Directory() = default;
-    Directory(std::string inName) : name(inName) {};
+    Directory(Directory* header, std::string inName) : headPointer(header), name(inName) {};
 
-    inline void addSubDirectory(Directory* directory) {subDirectories.push_back(directory); };
+    inline void addSubDirectory(std::string iniName) {
+        Directory tempDirectory(this, iniName);
+        subDirectories.push_back(tempDirectory);
+    };
     inline void addFiles(File file) {files.push_back(file); };
 
-    inline std::ostream& outputName(std::ostream& stream) { 
-        stream << this->name;
-        return stream;
-    };
-
-    friend void searchDirectories(Directory* root, const std::string target, bool& found);
-    friend uint64_t sumDirectories(Directory* root);
-    friend std::vector<Directory*> limitedDirectories(Directory* root, const uint64_t limit);
+    friend Directory* searchDirectories(Directory* root, const std::string target, uint32_t level);
+    friend uint64_t sumDirectories(Directory* masterPointer);
+    friend std::vector<Directory*> limitedDirectories(Directory* masterPointer, const uint64_t limit);
+    friend std::string printDirName(Directory* dir);
 
     friend bool operator==(const Directory* lhs, const std::string& rhs);
     friend bool operator==(const Directory lhs, const std::string& rhs);
@@ -33,8 +32,9 @@ public:
 
 private:
     std::string name;
-    std::vector<Directory *> subDirectories;
+    std::vector<Directory> subDirectories;
     std::vector<File> files;
+    Directory* headPointer = nullptr;
 };
 
 bool operator==(const Directory* lhs, const std::string& rhs) {
@@ -49,23 +49,26 @@ bool operator!=(const Directory* lhs, const std::string& rhs) {
     return (lhs->name != rhs) ? 1 : 0;
 }
 
-void searchDirectories(Directory* root, const std::string target, bool& found) {
-    if (root == target) found = true;
-    for (const auto dir : root->subDirectories) {
+Directory* searchDirectories(Directory* root, const std::string target, uint32_t level) {
+    Directory* tempPointer = nullptr;
+
+    if (root == target) tempPointer = root;
+    for (auto dir : root->subDirectories) {
         if (dir == target) { // If the directory is the correct one
-            root = dir;
-            found = true;
-            return;
+            tempPointer = &dir;
+            return tempPointer;
         }
-        searchDirectories(dir, target, found);
-        if (found) return;
+        tempPointer = searchDirectories(&dir, target, level + 1);
     }
+    
+    if (!level) tempPointer = root;
+    return tempPointer;
 }
 
 uint64_t sumDirectories(Directory* root) {
     uint64_t tempSum = 0;
-    for (const auto dir : root->subDirectories) {
-        tempSum += sumDirectories(dir);
+    for (auto dir : root->subDirectories) {
+        tempSum += sumDirectories(&dir);
     }
 
     for (const auto& file : root->files) {
@@ -78,14 +81,18 @@ uint64_t sumDirectories(Directory* root) {
 std::vector<Directory*> limitedDirectories(Directory* root, const uint64_t limit) {
     std::vector<Directory* > tempVec, tempVec2;
 
-    for (const auto dir : root->subDirectories) {
-        tempVec2 = limitedDirectories(dir, limit);
+    for (auto dir : root->subDirectories) {
+        tempVec2 = limitedDirectories(&dir, limit);
         tempVec.insert(std::end(tempVec), std::begin(tempVec2), std::end(tempVec2));
     }
 
     if (sumDirectories(root) <= limit) tempVec.push_back(root);
 
     return tempVec;
+}
+
+std::string printDirName(Directory* dir) {
+    return dir->name;
 }
 
 File createFile(std::string inName, uint64_t inSize) {
