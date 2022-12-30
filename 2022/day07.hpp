@@ -1,6 +1,7 @@
 #ifndef DAY_07
 #define DAY_07
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
