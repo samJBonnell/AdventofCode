@@ -89,5 +89,8 @@ int main(void) {
     std::cout << "Part Two" << std::endl;
     std::cout << smallestDir << std::endl;
 
+    std::cout << std::endl;
+    printStructure(&directoryBase, 0);
+
     return 0;
 }
