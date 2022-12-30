@@ -4,6 +4,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cctype>
+#include <functional>
+
+bool is_number(const std::string& s) {
+    return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+}
 
 struct File {
     std::string name;
@@ -23,8 +29,9 @@ public:
     Directory(std::string iniName) : name(iniName) {};
     Directory(std::string iniName, Directory* iniHeader) : name(iniName), header(iniHeader) {};
 
-    inline std::string printName() { return name; }
-    inline uint32_t printSize() { return size; }
+    inline std::string dirName() { return name; }
+    inline uint32_t dirSize() { return size; }
+    inline Directory* dirHeader() { return header; }
 
     friend bool operator==(Directory* root, std::string targetName);
 
@@ -34,7 +41,8 @@ public:
 
     friend Directory* directorySearch(Directory* root, std::string targetName, uint32_t depthOfSearchLevel);
     friend uint32_t directorySize(Directory* root);
-    friend std::vector<Directory*> sizeLimitedDirectories(Directory* root, uint32_t limit);
+    friend std::vector<Directory*> sizeLimitedDirectories(Directory* root, uint32_t limit, std::function<bool(const uint32_t&, const uint32_t&)> compare);
+    friend void printStructure(Directory* root, uint32_t depthOfCallIndex);
 
 private:
     Directory* header;
@@ -97,16 +105,31 @@ uint32_t directorySize(Directory* root) {
     return root->size;
 }
 
-std::vector<Directory*> sizeLimitedDirectories(Directory* root, uint32_t limit) {
+std::vector<Directory*> sizeLimitedDirectories(Directory* root, uint32_t limit, std::function<bool(const uint32_t&, const uint32_t&)> compare) {
     std::vector<Directory* > tempVec, returnVec;
 
     for (const auto ptr : root->subDirectories) {
-        returnVec = sizeLimitedDirectories(ptr, limit);
+        returnVec = sizeLimitedDirectories(ptr, limit, compare);
         tempVec.insert(tempVec.end(), returnVec.begin(), returnVec.end());
     }
 
-    if (root->size <= limit) tempVec.push_back(root);
+    if (compare(root->size, limit)) tempVec.push_back(root);
     return tempVec;
+}
+
+void printStructure(Directory* root, uint32_t depthOfCallIndex) {
+    for (uint32_t i = 0; i < depthOfCallIndex; i++) std::cout << "  ";
+    std::cout << root->name << std::endl;
+    for (auto ptr : root->subDirectories) {
+        printStructure(ptr, depthOfCallIndex + 1);
+    }
+
+    for (const auto& ptr : root->files) {
+        for (uint32_t i = 0; i < depthOfCallIndex + 1; i++) std::cout << "  ";
+        std::cout << ptr.name << " - " << ptr.size << std::endl;
+    }
+
+    return;
 }
 
 #endif
