@@ -7,28 +7,6 @@
 #include <cmath>
 #include <fstream>
 
-/*
-Part One: 13
-R 4
-U 4
-L 3
-D 1
-R 4
-D 1
-L 5
-R 2
-
-Part Two: 36
-R 5
-U 8
-L 8
-D 3
-R 17
-D 10
-L 25
-U 20
-*/
-
 constexpr uint32_t CHAIN_LENGTH = 10;
 
 struct Knot {
@@ -62,6 +40,7 @@ int main(void) {
     }
 
     std::set<Knot> tailVisited;
+    tailVisited.insert(knots.back());
 
     bool index = false;
     char direction;
@@ -91,17 +70,14 @@ int main(void) {
                         break;
                 }
 
-                // Insert tail
-                tailVisited.insert(knots.back());
-                
-                // Update tail
                 updateKnotPositions(&knots.front());
+                tailVisited.insert(knots.back());
             }
 
             index = false;
         }
     }
-    tailVisited.insert(knots.back());
+
     printVisitedLocations(tailVisited);
 
     if (CHAIN_LENGTH == 2)
@@ -109,7 +85,7 @@ int main(void) {
     else if (CHAIN_LENGTH == 10)
         std::cout << "Part Two: " <<tailVisited.size() << std::endl;
     else
-        std::cout << "Arbitrary Chain Length: " <<tailVisited.size() << std::endl;
+        std::cout << "Arbitrary Chain Length: " << tailVisited.size() << std::endl;
 
     return 0;
 }
@@ -134,6 +110,10 @@ void updateKnotPositions(Knot* root) {
                 root->nextKnot->x += (xDistance / 2);
                 root->nextKnot->y += yDistance;
             }
+            else if (std::abs(xDistance) == std::abs(yDistance)) {
+                root->nextKnot->x += (xDistance / std::abs(xDistance));
+                root->nextKnot->y += (yDistance / std::abs(yDistance));
+            }
             else {
                 root->nextKnot->x += xDistance;
                 root->nextKnot->y += (yDistance / 2);
@@ -148,7 +128,7 @@ void updateKnotPositions(Knot* root) {
 
 void printVisitedLocations(std::set<Knot>& visitedLocations) {
     std::ofstream outputFile;
-    outputFile.open("output.txt");
+    outputFile.open("day09_output.txt");
 
     int32_t width = visitedLocations.rbegin()->x - visitedLocations.begin()->x;
     int32_t xOffset = visitedLocations.begin()->x;
@@ -167,10 +147,8 @@ void printVisitedLocations(std::set<Knot>& visitedLocations) {
 
     for (auto ptr = outputBoard.rbegin(); ptr != outputBoard.rend(); ptr++) {
         for (const auto& column : *ptr) {
-            //std::cout << column;
             outputFile << column;
         }
-        //std::cout << std::endl;
         outputFile << std::endl;
     }
 
