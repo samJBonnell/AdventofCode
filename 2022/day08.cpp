@@ -1,49 +1,25 @@
 #include <iostream>
 #include <vector>
-#include <sstream>
 #include <string>
 #include <iterator>
 #include <set>
 #include <deque>
-
-/*
-    For each interior row and column, progress until a point lower than or equal to the previous height is found
-    Move to the other side of the row/column and repeat
-
-    Add all visible trees to the set of all trees
-
-    tree a = newTree(1,0,0);
-    tree b = newTree(2,0,1);
-    tree c = newTree(3,0,3);
-    tree d = newTree(4,0,2);
-    tree e = newTree(5,0,2);
-    tree f = newTree(6,0,1);
-    tree g = newTree(7,0,0);
-
-    std::vector<tree> test;
-
-    test.push_back(a);
-    test.push_back(b);
-    test.push_back(c);
-    test.push_back(d);
-    test.push_back(e);
-    test.push_back(f);
-    test.push_back(g);
-
-    std::set<tree> test2 = visibleTrees(test);
-
-*/
+#include <algorithm>
 
 struct tree {
-    uint32_t xCord;
-    uint32_t yCord;
-    uint32_t height;
+    int32_t xCord;
+    int32_t yCord;
+    int32_t height;
 };
 
 typedef std::vector<std::vector<tree>> grid;
 
-tree newTree(const uint32_t& iniX, const uint32_t& iniY, const uint32_t& iniHeight);
+tree newTree(const int32_t& iniX, const int32_t& iniY, const int32_t& iniHeight);
 std::set<tree> visibleTrees(const std::deque<tree>& treeLine);
+uint32_t scenicTrees(const grid& trees, const tree& currentLocation);
+
+bool operator==(const tree& lhs, const tree& rhs);
+bool operator<(const tree& lhs, const tree& rhs);
 void resetTree(tree* ref);
 
 int main(void) {
@@ -54,8 +30,14 @@ int main(void) {
     grid trees;
     tree inputTree;
 
-    for (uint32_t y = 0; y < forestGrid.size(); y++) {
-        for (uint32_t x = 0; x < forestGrid[y].size(); x++) {
+    std::vector<std::deque<tree>> treeLines;
+    std::deque<tree> tempDeque;
+
+    std::set<tree> partOne, tempSet;
+
+
+    for (int32_t y = 0; y < forestGrid.size(); y++) {
+        for (int32_t x = 0; x < forestGrid[y].size(); x++) {
             inputTree.height = forestGrid[y][x] - '0';
             inputTree.xCord = x;
             inputTree.yCord = y;
@@ -68,41 +50,47 @@ int main(void) {
     }
 
     // Traverse once over the rows, and once over the columns
-    std::vector<std::deque<tree>> treeLines;
-    std::deque<tree> tempDeque;
-
-    for (uint32_t y = 1; y < trees.size() - 1; y++) {
-        for (uint32_t x = 0; x < trees[y].size(); x++) {
+    for (int32_t y = 0; y < trees.size(); y++) {
+        for (int32_t x = 0; x < trees[y].size(); x++) {
             tempDeque.push_back(trees[y][x]);
         }
-        //tempDeque.push_front(inputTree);
-        //tempDeque.push_back(inputTree);
+        tempDeque.push_front(inputTree);
+        tempDeque.push_back(inputTree);
         treeLines.push_back(tempDeque);
         tempDeque.clear();
     }
 
-    for (uint32_t x = 1; x < trees[0].size() - 1; x++) {
-        for (uint32_t y = 0; y < trees.size(); y++) {
+    for (int32_t x = 0; x < trees[0].size(); x++) {
+        for (int32_t y = 0; y < trees.size(); y++) {
             tempDeque.push_back(trees[y][x]);
         }
-        //tempDeque.push_front(inputTree);
-        //tempDeque.push_back(inputTree);
+        tempDeque.push_front(inputTree);
+        tempDeque.push_back(inputTree);
         treeLines.push_back(tempDeque);
         tempDeque.clear();
     }
 
-    std::set<tree> partOne, tempSet;
     for (const auto& line : treeLines) {
         tempSet = visibleTrees(line);
         partOne.insert(tempSet.begin(), tempSet.end());
     }
 
+    uint32_t maximumScene = 0;
+    uint32_t tempScene = 0;
+    for (const auto& row : trees) {
+        for (const auto& ptr : row) {
+            tempScene = scenicTrees(trees, ptr);
+            maximumScene = (maximumScene < tempScene) ? tempScene : maximumScene;
+        }
+    }
+
     std::cout << "Part One: " << partOne.size() << std::endl;
+    std::cout << "Part Two: " << maximumScene << std::endl;
 
     return 0;
 }
 
-tree newTree(const uint32_t& iniX, const uint32_t& iniY, const uint32_t& iniHeight) {
+tree newTree(const int32_t& iniX, const int32_t& iniY, const int32_t& iniHeight) {
     tree tempTree;
     tempTree.xCord = iniX;
     tempTree.yCord = iniY;
@@ -111,44 +99,114 @@ tree newTree(const uint32_t& iniX, const uint32_t& iniY, const uint32_t& iniHeig
 }
 
 void resetTree(tree* ref) {
-    ref->height = 0;
+    ref->height = -1;
     ref->xCord = 0;
     ref->yCord = 0;
 }
 
 bool operator<(const tree& lhs, const tree& rhs) { // Sort based on X coordinates first, Y coordinates second
     if (lhs.xCord == rhs.xCord) return (lhs.yCord < rhs.yCord);
-    if (lhs.yCord == rhs.yCord) return (lhs.xCord < rhs.xCord);
     return (lhs.xCord < rhs.xCord);
+}
 
-    // If the x axis are the same, 
+bool operator==(const tree& lhs, const int32_t& rhs) {
+    return (lhs.height == rhs) ? 1 : 0;
 }
 
 std::set<tree> visibleTrees(const std::deque<tree>& treeLine) {
     std::set<tree> tempSet;
-    uint32_t currentHighest = 10;
 
-    for (auto it_f = treeLine.begin(); it_f != treeLine.end(); it_f++) {
-        if (currentHighest == 10) {
-            currentHighest = (it_f)->height;
+    auto comp = [](const tree& lhs, const tree& rhs) -> bool { return (lhs.height < rhs.height); }; // Define a comparison for the maximum height search
+    int32_t maximumHeight = std::max_element(treeLine.begin(), treeLine.end(), comp)->height;      // Find the maximum height in the current set
+    auto searchLimit = std::find(treeLine.rbegin(), treeLine.rend(), maximumHeight);                // Find the point at which the maximum height is reached from the opposite direction
+
+    int32_t currentMax = 10;
+
+    for (const auto& ptr : treeLine) {
+        if (currentMax == 10) {
+            currentMax =  (ptr).height;
+            tempSet.insert(ptr);
         }
-        else if ((it_f)->height > currentHighest) {
-            tempSet.insert(*(it_f));
-            currentHighest = (it_f)->height;
+        else {
+            if (ptr.height > currentMax) {
+                currentMax = ptr.height;
+                tempSet.insert(ptr);
+            }
         }
+        if (ptr.height == maximumHeight) break;
     }
 
-    currentHighest = 10;
+    currentMax = 10;
 
-    for (auto it_r = treeLine.rbegin(); it_r != treeLine.rend(); it_r++) {
-        if (currentHighest == 10) {
-            currentHighest = (it_r)->height;
+    for (auto ptr = treeLine.rbegin(); ptr != searchLimit + 1; ptr++) {
+        if (currentMax == 10) {
+            currentMax =  (ptr)->height;
+            tempSet.insert(*ptr);
         }
-        else if ((it_r)->height > currentHighest) {
-            tempSet.insert(*(it_r));
-            currentHighest = (it_r)->height;
+        else {
+            if (ptr->height > currentMax) {
+                currentMax = ptr->height;
+                tempSet.insert(*ptr);
+            }
         }
     }
 
     return tempSet;
+}
+
+uint32_t scenicTrees(const grid& trees, const tree& currentLocation) {
+    if (currentLocation.xCord == 0 || currentLocation.yCord == 0 || currentLocation.xCord == trees[0].size() - 1 || currentLocation.yCord == trees.size() - 1) return 0;
+
+    uint32_t scenicScore = 1;
+    uint32_t viewedTrees = 0;
+    bool stop = false;
+
+    int32_t x = currentLocation.xCord;
+    int32_t y = currentLocation.yCord;
+    uint32_t height = currentLocation.height;
+
+    // Look Up
+    // while (--y >= 0 && trees[y][x].height < height) viewedTrees++;
+    while (--y >= 0 && !stop) {
+        if (trees[y][x].height >= height) stop = true;
+        viewedTrees++;
+    }
+    if (viewedTrees != 0) scenicScore *= viewedTrees;
+    viewedTrees = 0;
+    stop = false;
+
+    // Look Left
+    y = currentLocation.yCord;
+    // while (--x >= 0 && trees[y][x].height < height) viewedTrees++;
+    while (--x >= 0 && !stop) {
+        if (trees[y][x].height >= height) stop = true;
+        viewedTrees++;
+    }
+    if (viewedTrees != 0) scenicScore *= viewedTrees;
+    viewedTrees = 0;
+    stop = false;
+
+    // Look Down
+    x = currentLocation.xCord;
+    //while (++y <= trees.size() - 1 && trees[y][x].height < height) viewedTrees++;
+    while (++y <= trees.size() - 1 && !stop) {
+        if (trees[y][x].height >= height) stop = true;
+        viewedTrees++;
+    }
+    if (viewedTrees != 0) scenicScore *= viewedTrees;
+    viewedTrees = 0;
+    stop = false;
+
+    // Look Right
+    y = currentLocation.yCord;
+    //while (++x <= trees[y].size() - 1 && trees[y][x].height < height) viewedTrees++;
+    while (++x <= trees[y].size() - 1 && !stop) {
+        if (trees[y][x].height >= height) stop = true;
+        viewedTrees++;
+    }
+    if (viewedTrees != 0) scenicScore *= viewedTrees;
+    viewedTrees = 0;
+    stop = false;
+
+    return scenicScore;
 }
