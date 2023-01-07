@@ -1,6 +1,7 @@
 #ifndef DAY_11
 #define DAY_11
 
+#include <iostream>
 #include <deque>
 #include <functional>
 #include <algorithm>
