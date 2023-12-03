@@ -5,3 +5,6 @@ My third run through the ringer has begun! We will see how long I can maintain t
 
 2022:
 This year, the goal is to progress past day ten and hopefully start the new year with an AOC total of 20 stars for this years challenge! We shall see!
+
+2023:
+A slow year to begin with finals, capstone projects, etc. but I am looking forward to solving this years puzzles in C++!
