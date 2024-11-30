@@ -34,7 +34,7 @@ int main(void) {
         while (!std::isdigit(*end) && end != string.rend()) end++;
         calibrationSum += 10*(*(start)-(int)48) + (*end - (int)48);
 
-        std::cout << (*(start)-(int)48) << (*end - (int)48) << std::endl << std::endl;
+        std::cout << (*(start)-(int)48) << (*end - (int)48) << std::endl;
     }
 
     std::cout << "Part One: " << calibrationSum << std::endl;
