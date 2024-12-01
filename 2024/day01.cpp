@@ -22,12 +22,15 @@ int main(void) {
         else rightList.insert(std::stoi(ptr));
     }
 
-    std::multiset<int>::iterator ptrLeft = leftList.begin(), endLeft = leftList.end();
-    std::multiset<int>::iterator ptrRight = rightList.begin(), endRight = rightList.end();
+    std::multiset<int>::iterator beginLeft = leftList.begin(), endLeft = leftList.end();
+    std::multiset<int>::iterator beginRight = rightList.begin(), endRight = rightList.end();
 
+    std::multiset<int>::iterator ptrLeft =  beginLeft;
+    std::multiset<int>::iterator ptrRight =  beginRight;
+
+    int leftVal = 0, rightVal = 0;
     while (ptrLeft != endLeft) distance += std::abs(*(ptrLeft++) - *(ptrRight++));
-
-    uint32_t tempSimilarity = 0;
+    
     ptrRight = rightList.begin(), endRight = rightList.end();
     for (const auto& ptrLeft : leftList) {
         similarityScore += (ptrLeft * std::count(ptrRight, endRight, ptrLeft));
