@@ -1,3 +1,60 @@
-# Ignore all binary directories that are created
+# Compiled binaries
 */bin/
+*.exe
+*.out
+*.o
+*.obj
 
+# Executable files (Unix/Linux)
+**/bin/*
+!**/bin/.gitkeep
+
+# Compiler-generated files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE and editor files
+/.vscode/
+.vscode/
+*.swp
+*.swo
+*~
+.idea/
+*.sublime-*
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Project metadata
+tree.txt
+.cache/
+
+# C++ specific
+*.a
+*.so
+*.dylib
+*.dll
+*.gch
+*.pch
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Input files (if you want to keep puzzle inputs private)
+# Uncomment if needed:
+# */input.txt
+# */input*.txt
