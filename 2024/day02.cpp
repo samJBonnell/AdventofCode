@@ -30,23 +30,76 @@ Check the 'slope' of the sequence
 Remove the element with the incorrect slope?
 
 7 6 4 2 1
+
 6 - 7 = -1
 4 - 6 = -2
 2 - 4 = -2
 1 - 2 = -1
 
+Passes descending
 
 1 2 7 8 9
+
+2 - 1 = 1
+7 - 2 = 5
+7 - 8 = 1
+9 - 8 = 1
+
+Remove 7
+
+2 - 1 = 1
+8 - 2 = 1
+
+Fails
+
+Fails
+
+Remove 
+
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9
 
+Ascending Check
+1 2 3 4 9
+2 - 1 = 1
+3 - 2 = 1
+4 - 3 = 1
+9 - 4 = 5
+
+-> Remove 9
+
+9 1 2 3 4
+1 - 9 = -8
+2 - 1 = 1
+3 - 2 = 1
+4 - 3 = 1
+
+-> Remove 9
+
+If slope > && slope > max 0:
+    Remove 2nd element
+If slope < 0 && abs(slope) > max:
+    Remove 1st element
+If slope == 0:
+    Remove 1st or 2nd element
+
+5 4 3 2 1
+4 - 5 = -1
+3 - 4 = -1
+2 - 3 = -1
+1 - 2 = -1
+
+9 5 4 3 2 1
+5 - 9 = -4
+4 - 5 = -1
+3 - 4 = -1
+2 - 3 = -1
+1 - 2 = -1
 
 
 */
-
-
 
 int main(int argc, char** argv) {
     bool programDamper = (bool)argv[0];
