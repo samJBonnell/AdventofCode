@@ -30,7 +30,6 @@ int main(void) {
     std::multiset<int>::iterator ptrLeft =  beginLeft;
     std::multiset<int>::iterator ptrRight =  beginRight;
 
-    int leftVal = 0, rightVal = 0;
     while (ptrLeft != endLeft) distance += std::abs(*(ptrLeft++) - *(ptrRight++));
     
     ptrRight = rightList.begin(), endRight = rightList.end();
