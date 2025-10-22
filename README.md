@@ -11,3 +11,6 @@ A slow year to begin with finals, capstone projects, etc. but I am looking forwa
 
 2024:
 First year in my Masters so we shall see how much time I can find, but ideally, I would like to move back into the 10-15 star range. I plan to continue writing in C++ BUT! we shall see if plain ole' C makes an appearance!
+
+2025:
+Setting stuff up earlier this year (second year in graduate school, yipee!) but I hope to just get through some problems, write in C++/C to improve my baseline programming skills, and who knows, maybe try again to get all the stars!
