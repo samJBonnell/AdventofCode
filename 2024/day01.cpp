@@ -3,12 +3,14 @@
 #include <vector>
 #include <iterator>
 #include <sstream>
+#include <fstream>
 #include <set>
 #include <cmath>
 #include <algorithm>
 
 int main(void) {
-    std::istream_iterator<std::string> in(std::cin), eof;
+    std::ifstream file("input.txt");
+    std::istream_iterator<std::string> in(file), eof;
     std::vector<std::string> input(in, eof);
 
     std::multiset<int> leftList, rightList;

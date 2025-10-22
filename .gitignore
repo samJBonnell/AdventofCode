@@ -56,5 +56,5 @@ Makefile
 
 # Input files (if you want to keep puzzle inputs private)
 # Uncomment if needed:
-# */input.txt
-# */input*.txt
+*/input.txt
+*/input*.txt
